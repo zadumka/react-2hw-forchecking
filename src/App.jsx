@@ -8,7 +8,7 @@ import './App.css'
 
 function App() {
     const [feedback, setFeedback] = React.useState({ good: 0, neutral: 0, bad: 0 });
-  });
+  
 
   const updateFeedback = (type) => {
     setFeedback((prevFeedback) => ({
