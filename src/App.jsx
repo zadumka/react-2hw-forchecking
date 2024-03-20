@@ -34,7 +34,7 @@ function App() {
 
   const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
 
-  const postiveFeedback = Math.round((feedback.good / totalFeedback) * 100);
+  const positiveFeedback = Math.round((feedback.good / totalFeedback) * 100);
   return (
     <div>
       <Description />
@@ -45,7 +45,7 @@ function App() {
           neutral={feedback.neutral}
           bad={feedback.bad}
           totalFeedback={totalFeedback}
-          positivePercentage={positivePercentage}
+          positiveFeedback={positiveFeedback}
         />
       ) : (
         <Notification />
