@@ -26,7 +26,7 @@ function App() {
     if (savedFeedback) {
       setFeedback(savedFeedback);
     }
-  }, []);
+  }, [options]);
 
   React.useEffect(() => {
     localStorage.setItem('feedback', JSON.stringify(feedback));
