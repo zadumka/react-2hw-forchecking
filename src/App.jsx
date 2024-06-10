@@ -1,57 +1,66 @@
+import { Description, Options, Feedback, Notification } from "components";
+import { Background } from "./components/Background/Background";
+import { useEffect, useState } from "react";
 
-import React from 'react';
-import Feedback from './components/Feedback';
-import Options from './components/Options';
-import Notification from './components/Notification';
-import Description from './components/Description';
-import './App.css'
+const defaultReactions = {
+  good: 0,
+  neutral: 0,
+  bad: 0,
+};
 
-function App() {
-    const [feedback, setFeedback] = React.useState({ good: 0, neutral: 0, bad: 0 });
-  
+// <== YOU CAN TEST (reset reviews/storage first) ==>
+// Add one more reaction to "defaultReactions" to test scalability, though the satisfaction calculation is still too poor: (
 
-  const updateFeedback = (type) => {
-    setFeedback((prevFeedback) => ({
-      ...prevFeedback,
-      [type]: prevFeedback[type] + 1,
-    }));
+// const defaultReactions = {
+//   good: 0,
+//   neutral: 0,
+//   bad: 0,
+//   awful: 0,
+// };
+
+const App = () => {
+  const [reviews, setReviews] = useState(() => {
+    const savedReviews = window.localStorage.getItem("reviews");
+    if (savedReviews) return JSON.parse(savedReviews);
+
+    return defaultReactions;
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem("reviews", JSON.stringify(reviews));
+  }, [reviews]);
+
+  const updateFeedback = (feedbackType) => {
+    setReviews({
+      ...reviews,
+      [feedbackType]: reviews[feedbackType] + 1,
+    });
   };
 
-  const resetFeedback = () => {
-    setFeedback({ good: 0, neutral: 0, bad: 0 });
-  };
+  const resetFeedback = () => setReviews(defaultReactions);
 
-  React.useEffect(() => {
-    const savedFeedback = JSON.parse(localStorage.getItem('feedback'));
-    if (savedFeedback) {
-      setFeedback(savedFeedback);
-    }
-  }, [options]);
+  const totalFeedback = Object.values(reviews).reduce(
+    (acc, value) => acc + value,
+    0
+  );
 
-  React.useEffect(() => {
-    localStorage.setItem('feedback', JSON.stringify(feedback));
-  }, [feedback]);
-
-  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
-
-  const positiveFeedback = Math.round((feedback.good / totalFeedback) * 100);
   return (
-    <div>
+    <>
+      <Background />
       <Description />
-      <Options updateFeedback={updateFeedback} totalFeedback={totalFeedback} resetFeedback={resetFeedback} />
-     {totalFeedback > 0 ? (
-        <Feedback
-          good={feedback.good}
-          neutral={feedback.neutral}
-          bad={feedback.bad}
-          totalFeedback={totalFeedback}
-          positiveFeedback={positiveFeedback}
-        />
+      <Options
+        reviews={reviews}
+        updateFeedback={updateFeedback}
+        totalFeedback={totalFeedback}
+        resetFeedback={resetFeedback}
+      />
+      {totalFeedback ? (
+        <Feedback reviews={reviews} totalFeedback={totalFeedback} />
       ) : (
         <Notification />
       )}
-    </div>
+    </>
   );
-}
+};
 
 export default App;
