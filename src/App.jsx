@@ -1,5 +1,5 @@
 import { Description, Options, Feedback, Notification } from "components";
-import { Background } from "./components/Background/Background";
+import { Background } from "./Background/Background";
 import { useEffect, useState } from "react";
 
 const defaultReactions = {
